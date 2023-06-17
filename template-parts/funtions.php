@@ -1,54 +1,44 @@
 <?php 
-function autocompletar_formulario_tarjeta() {
-    ?>
-    <script>
-    jQuery(function($) {
-        // Rellena automáticamente los campos del formulario de tarjeta
-        $('#cardNumber').val('3711 803032 57522');
-        $('#form-checkout__cardholderName').val('Martines');
-        $('#expirationDate').val('12/25');
-        $('#securityCode').val('1234');
-        $('input.mp-document').val('41121548');
-    });
-    </script>
-    <?php
-}
-add_action('woocommerce_after_checkout_form', 'autocompletar_formulario_tarjeta');
-
-function verificar_numero_tickets() {
-    // Obtener el número de tickets seleccionados en el carrito
-    $numero_tickets = $_POST['billing_cotasescolhidas'];
-
-    // Obtener todos los pedidos
-    $pedidos = wc_get_orders(array(
-        'limit' => -1,
-        'status' => array('processing', 'completed') // Incluye aquí los estados de pedido que deseas verificar
-    ));
-
-    // Recorrer los pedidos y verificar si el número de tickets está presente en cada uno
-    foreach ($pedidos as $pedido) {
-        // Obtener el número de tickets del pedido actual
-        $tickets_pedido = $pedido->get_meta('billing_cotasescolhidas');
-
-        // Verificar si el número de tickets coincide
-        if ($tickets_pedido == $numero_tickets) {
-            // Mostrar mensaje de error con el número de ticket no disponible
-            $message = 'El ticket número ' . $numero_tickets . ' ya no está disponible. Por favor, elige otro número de ticket.';
-            wc_add_notice($message, 'error');
-            return;
-        }
+// Función para verificar si el número de tickets ya está en uso
+function verificar_numero_tickets($numero_tickets) {
+    // Consulta a la base de datos de WordPress
+    global $wpdb;
+    
+    // Nombre de la tabla de pedidos
+    $tabla_pedidos = $wpdb->prefix . 'woocommerce_order_items';
+    
+    // Consulta para verificar si el número de tickets ya existe en la tabla de pedidos
+    $consulta = $wpdb->prepare("
+        SELECT order_item_id
+        FROM $tabla_pedidos
+        WHERE order_item_type = 'line_item'
+        AND order_item_name = 'billing_cotasescolhidas'
+        AND order_item_meta_value = %s
+    ", $numero_tickets);
+    
+    // Ejecutar la consulta
+    $resultado = $wpdb->get_var($consulta);
+    
+    // Si se encontró un pedido con el número de tickets, mostrar un mensaje de error
+    if ($resultado) {
+        $mensaje = 'El número de tickets elegido (' . $numero_tickets . ') ya ha sido comprado y no está disponible.';
+        wc_add_notice($mensaje, 'error');
+        // Redirigir al carrito o a la página de pago (ajustar según tu configuración)
+        wp_safe_redirect(wc_get_cart_url());
+        exit;
     }
-
-    // Si no se encuentra el número de tickets en ningún pedido existente, permitir el procesamiento del pago
-    return;
 }
+
+// Hook para ejecutar la función antes de procesar el pedido
+add_action('woocommerce_checkout_process', 'verificar_numero_tickets');
+
 
 // Hook para verificar el número de tickets antes de procesar el pago
 add_action('woocommerce_checkout_process', 'verificar_numero_tickets');
 
 function agregar_texto_actualizacion_checkout() {
     // Coloca aquí el texto que deseas mostrar
-    $texto_actualizacion = 'VERCION 2';
+    $texto_actualizacion = 'VERCION 3';
 
     echo '<p>' . $texto_actualizacion . '</p>';
 }
