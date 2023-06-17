@@ -18,8 +18,17 @@ function verificar_numero_tickets($order_id, $numero_ticket) {
 
         // Verificar si el número de ticket ya existe en el meta_value
         if ( $meta_value == $numero_ticket ) {
-            // Mostrar mensaje de número no disponible y detener el proceso de pago
-            wc_add_notice( 'El número ' . $numero_ticket . ' no está disponible. Por favor, elige otro número para completar el proceso de pago.', 'error' );
+            // Obtener el ID del producto en el pedido
+            $product_id = $wpdb->get_var( $wpdb->prepare( "
+                SELECT product_id FROM $wpdb->woocommerce_order_items
+                WHERE order_id = %d
+            ", $order_id ) );
+
+            // Obtener el nombre del producto
+            $product_name = get_the_title( $product_id );
+
+            // Mostrar mensaje de número no disponible con el número elegido y detener el proceso de pago
+            wc_add_notice( 'El número ' . $numero_ticket . ' no está disponible para el producto "' . $product_name . '". Por favor, elige otro número para completar el proceso de pago.', 'error' );
             return false;
         }
     }
@@ -32,9 +41,10 @@ function verificar_numero_tickets($order_id, $numero_ticket) {
 add_action( 'woocommerce_checkout_process', 'verificar_numero_tickets', 10, 2 );
 
 
+
 function agregar_texto_actualizacion_checkout() {
     // Coloca aquí el texto que deseas mostrar
-    $texto_actualizacion = 'VERCION 4';
+    $texto_actualizacion = 'VERCION 5';
 
     echo '<p>' . $texto_actualizacion . '</p>';
 }
