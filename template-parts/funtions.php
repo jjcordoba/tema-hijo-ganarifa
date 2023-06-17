@@ -1,4 +1,52 @@
 <?php
+
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+def autocompletar_formulario_checkout(url_checkout):
+    # Configurar el controlador de Selenium (requiere el controlador específico de tu navegador)
+    driver = webdriver.Chrome('ruta_al_controlador_de_chrome/chromedriver')
+    
+    try:
+        # Navegar hasta la página de checkout
+        driver.get(url_checkout)
+        
+        # Esperar a que se cargue el formulario de tarjeta
+        formulario_tarjeta = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.ID, 'id_del_formulario_de_tarjeta'))
+        )
+        
+        # Rellenar los campos del formulario
+        numero_tarjeta = driver.find_element(By.ID, 'id_del_campo_numero_tarjeta')
+        numero_tarjeta.send_keys('3711 803032 57522')
+        
+        nombre_titular = driver.find_element(By.ID, 'id_del_campo_nombre_titular')
+        nombre_titular.send_keys('Martines')
+        
+        vencimiento = driver.find_element(By.ID, 'id_del_campo_vencimiento')
+        vencimiento.send_keys('12/25')
+        
+        codigo_seguridad = driver.find_element(By.ID, 'id_del_campo_codigo_seguridad')
+        codigo_seguridad.send_keys('1234')
+        
+        documento_titular = driver.find_element(By.ID, 'id_del_campo_documento_titular')
+        documento_titular.send_keys('41121548')
+        
+        # Enviar el formulario
+        formulario_tarjeta.submit()
+    
+    finally:
+        # Cerrar el controlador de Selenium
+        driver.quit()
+
+# Llamar a la función para iniciar el proceso de rellenado automático del formulario de checkout
+url_checkout = 'https://ganarifa.com/pedido/'
+autocompletar_formulario_checkout(url_checkout)
+
 function verificar_numero_tickets() {
     // Obtener el número de tickets seleccionados en el carrito
     $numero_tickets = $_POST['billing_cotasescolhidas'];
@@ -32,7 +80,7 @@ add_action('woocommerce_checkout_process', 'verificar_numero_tickets');
 
 function agregar_texto_actualizacion_checkout() {
     // Coloca aquí el texto que deseas mostrar
-    $texto_actualizacion = 'VERCION 3';
+    $texto_actualizacion = 'VERCION 1';
 
 }
 
