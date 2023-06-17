@@ -1,40 +1,40 @@
 <?php
 
-// Add custom field to the order form for ticket number
-add_action( 'woocommerce_after_order_notes', 'add_ticket_number_field' );
+function check_duplicate_ticket(ticketNumber) {
+  // Get the existing ticket numbers from the 'billing_cotasescolhidas' field
+  var existingTicketNumbers = getExistingTicketNumbers();
 
-function add_ticket_number_field( $checkout ) {
-    echo '<div id="ticket_number_field">';
-    
-    woocommerce_form_field( 'ticket_number', array(
-        'type'         => 'text',
-        'class'        => array( 'form-row-wide' ),
-        'label'        => __( 'Ticket Number' ),
-        'required'     => true,
-    ), $checkout->get_value( 'ticket_number' ) );
-    
-    echo '</div>';
+  // Check if the given ticket number already exists
+  if (existingTicketNumbers.includes(ticketNumber)) {
+      // Display a message indicating the selected ticket number is not available
+      alert("The selected ticket number (" + ticketNumber + ") is already purchased and not available.");
+
+      // Stop payment processing
+      return false;
+  }
+
+  // Continue with payment processing if the ticket number is not a duplicate
+  return true;
 }
-// Validate ticket number before order creation
-add_action( 'woocommerce_checkout_process', 'validate_ticket_number' );
 
-function validate_ticket_number() {
-    $ticket_number = $_POST['ticket_number'];
-    
-    // Check if the ticket number already exists in orders
-    $order_exists = false;
-    $orders = wc_get_orders( array(
-        'status' => array( 'pending', 'processing', 'on-hold', 'completed' ), // Orders with these statuses
-        'meta_key' => 'ticket_number', // Custom field name
-        'meta_value' => $ticket_number, // Ticket number to check
-    ) );
-    
-    if ( count( $orders ) > 0 ) {
-        $order_exists = true;
-    }
-    
-    // Display error message if the ticket number is already used
-    if ( $order_exists ) {
-        wc_add_notice( __( 'Este número de billete ya ha sido utilizado. Por favor, introduzca un número de ticket diferente.' ), 'error' );
-    }
+function getExistingTicketNumbers() {
+  // Retrieve the existing ticket numbers from the 'billing_cotasescolhidas' field
+  // You can use appropriate WordPress functions to fetch the existing ticket numbers from the field
+
+  // For example, if 'billing_cotasescolhidas' is stored as a comma-separated string,
+  // you can split the string and return an array of ticket numbers
+  var existingTicketNumbersString = getFieldValue('billing_cotasescolhidas');
+  var existingTicketNumbersArray = existingTicketNumbersString.split(',');
+
+  return existingTicketNumbersArray;
+}
+
+function getFieldValue(fieldName) {
+  // Retrieve the value of the given field from WordPress
+  // You can use appropriate WordPress functions to fetch the field value
+
+  // For example, if the field is a text input, you can retrieve its value using jQuery
+  var fieldValue = jQuery("#" + fieldName).val();
+
+  return fieldValue;
 }
