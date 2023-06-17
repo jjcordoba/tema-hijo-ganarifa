@@ -1,6 +1,7 @@
 <?php
 
 include_once 'template-parts/funtions.php';
+include_once 'peronalizacion/login.php';
 
 add_filter( 'woocommerce_account_menu_items', 'ayudawp_ocultar_direccion', 999 );
 

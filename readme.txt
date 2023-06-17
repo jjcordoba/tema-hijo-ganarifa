@@ -234,7 +234,7 @@ Source: https://stocksnap.io/photo/4B83RD7BV9
 = 2.0.0 - 2019-05-12 =
 * Tweak: Updated theme screenshot (following comment by WP Theme Review team)
 * Tweak: Add Copyright & Image and Icon License sections in readme (following comment by WP Theme Review team)
-* Tweak: Remove duplicated call to `add_theme_support( 'custom-logo')`
+* Ajustes: Eliminar la llamada duplicada a `add_theme_support( 'custom-logo')`
 * Tweak: Readme file grammar & spelling
 * Tweak: Update `Tested up to 5.2`
 * Tweak: Change functions.php methods names prefix from `hello_elementor_theme_` to `hello_elementor_`
