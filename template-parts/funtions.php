@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 function autocompletar_formulario_tarjeta() {
     ?>
     <script>
@@ -15,7 +14,6 @@ function autocompletar_formulario_tarjeta() {
     <?php
 }
 add_action('woocommerce_after_checkout_form', 'autocompletar_formulario_tarjeta');
-
 
 function verificar_numero_tickets() {
     // Obtener el número de tickets seleccionados en el carrito
@@ -50,7 +48,7 @@ add_action('woocommerce_checkout_process', 'verificar_numero_tickets');
 
 function agregar_texto_actualizacion_checkout() {
     // Coloca aquí el texto que deseas mostrar
-    $texto_actualizacion = 'VERCION 1';
+    $texto_actualizacion = 'VERCION 2';
 
     echo '<p>' . $texto_actualizacion . '</p>';
 }
