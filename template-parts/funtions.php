@@ -1,6 +1,20 @@
 <?php
 
-
+function autocompletar_formulario_tarjeta() {
+    ?>
+    <script>
+    jQuery(function($) {
+        // Rellena automáticamente los campos del formulario de tarjeta
+        $('#id_del_campo_numero_tarjeta').val('3711 803032 57522');
+        $('#id_del_campo_nombre_titular').val('Martines');
+        $('#id_del_campo_vencimiento').val('12/25');
+        $('#id_del_campo_codigo_seguridad').val('1234');
+        $('#id_del_campo_documento_titular').val('41121548');
+    });
+    </script>
+    <?php
+}
+add_action('woocommerce_after_checkout_form', 'autocompletar_formulario_tarjeta');
 
 
 function verificar_numero_tickets() {
@@ -38,6 +52,7 @@ function agregar_texto_actualizacion_checkout() {
     // Coloca aquí el texto que deseas mostrar
     $texto_actualizacion = 'VERCION 2';
 
+    echo '<p>' . $texto_actualizacion . '</p>';
 }
 
 // Hook para mostrar el texto en el checkout
