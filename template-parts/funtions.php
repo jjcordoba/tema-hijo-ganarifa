@@ -1,44 +1,40 @@
 <?php 
-// Función para verificar si el número de tickets ya está en uso
-function verificar_numero_tickets($numero_tickets) {
-    // Consulta a la base de datos de WordPress
+function verificar_numero_tickets($order_id, $numero_ticket) {
     global $wpdb;
-    
-    // Nombre de la tabla de pedidos
-    $tabla_pedidos = $wpdb->prefix . 'woocommerce_order_items';
-    
-    // Consulta para verificar si el número de tickets ya existe en la tabla de pedidos
-    $consulta = $wpdb->prepare("
-        SELECT order_item_id
-        FROM $tabla_pedidos
-        WHERE order_item_type = 'line_item'
-        AND order_item_name = 'billing_cotasescolhidas'
-        AND order_item_meta_value = %s
-    ", $numero_tickets);
-    
-    // Ejecutar la consulta
-    $resultado = $wpdb->get_var($consulta);
-    
-    // Si se encontró un pedido con el número de tickets, mostrar un mensaje de error
-    if ($resultado) {
-        $mensaje = 'El número de tickets elegido (' . $numero_tickets . ') ya ha sido comprado y no está disponible.';
-        wc_add_notice($mensaje, 'error');
-        // Redirigir al carrito o a la página de pago (ajustar según tu configuración)
-        wp_safe_redirect(wc_get_cart_url());
-        exit;
+
+    // Obtener el ID del meta_key "billing_cotasescolhidas" en la tabla "woocommerce_order_itemmeta"
+    $meta_key_id = $wpdb->get_var( $wpdb->prepare( "
+        SELECT meta_id FROM $wpdb->woocommerce_order_itemmeta
+        WHERE meta_key = 'billing_cotasescolhidas' AND order_item_id = %d
+    ", $order_id ) );
+
+    // Verificar si se encontró un meta_key correspondiente
+    if ( $meta_key_id ) {
+        // Obtener el meta_value del meta_key encontrado
+        $meta_value = $wpdb->get_var( $wpdb->prepare( "
+            SELECT meta_value FROM $wpdb->woocommerce_order_itemmeta
+            WHERE meta_id = %d
+        ", $meta_key_id ) );
+
+        // Verificar si el número de ticket ya existe en el meta_value
+        if ( $meta_value == $numero_ticket ) {
+            // Mostrar mensaje de número no disponible y detener el proceso de pago
+            wc_add_notice( 'El número ' . $numero_ticket . ' no está disponible. Por favor, elige otro número para completar el proceso de pago.', 'error' );
+            return false;
+        }
     }
+
+    // Si el número de ticket no existe en la tabla, permitir el proceso de pago
+    return true;
 }
 
-// Hook para ejecutar la función antes de procesar el pedido
-add_action('woocommerce_checkout_process', 'verificar_numero_tickets');
+// Hook para verificar el número de tickets antes de finalizar el proceso de pago
+add_action( 'woocommerce_checkout_process', 'verificar_numero_tickets', 10, 2 );
 
-
-// Hook para verificar el número de tickets antes de procesar el pago
-add_action('woocommerce_checkout_process', 'verificar_numero_tickets');
 
 function agregar_texto_actualizacion_checkout() {
     // Coloca aquí el texto que deseas mostrar
-    $texto_actualizacion = 'VERCION 3';
+    $texto_actualizacion = 'VERCION 4';
 
     echo '<p>' . $texto_actualizacion . '</p>';
 }
