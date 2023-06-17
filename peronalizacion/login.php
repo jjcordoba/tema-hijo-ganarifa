@@ -15,6 +15,17 @@ function bs_change_login_logo_styles()
       height: 250px;
     }
 
+    #login h1 a[href$="wp-login.php"] {
+      display: none;
+    }
+
+    #login h1 a[href$="<?php echo esc_url(home_url('/')); ?>"] {
+      background-image: url('<?php echo esc_url($logo_url); ?>');
+      background-size: contain;
+      width: 100%;
+      height: 250px;
+    }
+
     div p a {
       color: #ffffff!important;
       font-size: 18px;
@@ -42,6 +53,18 @@ function bs_change_login_logo_styles()
     }
   </style>
 <?php
+}
+
+add_filter('login_headerurl', 'bs_change_login_logo_url');
+function bs_change_login_logo_url()
+{
+  return esc_url(home_url('/'));
+}
+
+add_filter('login_headertext', 'bs_change_login_logo_url_title');
+function bs_change_login_logo_url_title()
+{
+  return get_bloginfo('name');
 }
 
 add_filter('login_display_language_dropdown', '__return_false');
