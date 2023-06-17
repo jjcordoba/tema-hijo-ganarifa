@@ -29,11 +29,12 @@ function verificar_numero_tickets() {
 
 // Hook para verificar el número de tickets antes de procesar el pago
 add_action('woocommerce_checkout_process', 'verificar_numero_tickets');
+
 function agregar_texto_actualizacion_checkout() {
     // Coloca aquí el texto que deseas mostrar
-    $texto_actualizacion = 'VERCION 2';
+    $texto_actualizacion = 'VERCION 3';
 
-    echo '<p>' . $texto_actualizacion . '</p>';
+    echo '<h1>' . $texto_actualizacion . '</h1>';
 }
 
 // Hook para mostrar el texto en el checkout
