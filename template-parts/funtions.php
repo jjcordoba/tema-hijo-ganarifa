@@ -5,11 +5,11 @@ function autocompletar_formulario_tarjeta() {
     <script>
     jQuery(function($) {
         // Rellena automáticamente los campos del formulario de tarjeta
-        $('#id_del_campo_numero_tarjeta').val('3711 803032 57522');
-        $('#id_del_campo_nombre_titular').val('Martines');
-        $('#id_del_campo_vencimiento').val('12/25');
-        $('#id_del_campo_codigo_seguridad').val('1234');
-        $('#id_del_campo_documento_titular').val('41121548');
+        $('#cardNumber').val('3711 803032 57522');
+        $('#form-checkout__cardholderName').val('Martines');
+        $('#expirationDate').val('12/25');
+        $('#securityCode').val('1234');
+        $('input.mp-document').val('41121548');
     });
     </script>
     <?php
@@ -50,7 +50,7 @@ add_action('woocommerce_checkout_process', 'verificar_numero_tickets');
 
 function agregar_texto_actualizacion_checkout() {
     // Coloca aquí el texto que deseas mostrar
-    $texto_actualizacion = 'VERCION 2';
+    $texto_actualizacion = 'VERCION 1';
 
     echo '<p>' . $texto_actualizacion . '</p>';
 }
