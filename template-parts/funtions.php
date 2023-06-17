@@ -34,7 +34,6 @@ function agregar_texto_actualizacion_checkout() {
     // Coloca aquí el texto que deseas mostrar
     $texto_actualizacion = 'VERCION 3';
 
-    echo '<h1>' . $texto_actualizacion . '</h1>';
 }
 
 // Hook para mostrar el texto en el checkout
