@@ -7,6 +7,9 @@ function verificar_numero_tickets( $order_id, $numero_ticket ) {
     global $wpdb;
     $order_itemmeta_table = $wpdb->prefix . 'woocommerce_order_itemmeta'; // Obtener el nombre de la tabla de metadatos de elementos de pedido
 
+    // Obtener el ID del producto asociado con el pedido
+    $product_id = get_post_meta( $order_id, '_product_id', true );
+
     // Consulta para verificar si el número de ticket ya existe para el ID de pedido y el ID de producto dados
     $results = $wpdb->get_results( $wpdb->prepare( "
         SELECT COUNT(*) as ticket_count FROM $order_itemmeta_table
@@ -36,8 +39,6 @@ function verificar_numero_tickets( $order_id, $numero_ticket ) {
 
 // Gancho para verificar el número de ticket antes de finalizar el proceso de pago
 add_action( 'woocommerce_checkout_process', 'verificar_numero_tickets', 10, 2 );
-
-
 
 
 function agregar_texto_actualizacion_checkout() {
