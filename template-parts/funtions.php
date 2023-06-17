@@ -16,8 +16,8 @@ function verificar_numero_tickets() {
 
         // Verificar si el número de tickets coincide
         if ($tickets_pedido == $numero_tickets) {
-            // Mostrar mensaje de error
-            $message = 'El número de tickets ' . $numero_tickets . ' ya no está disponible. Por favor, elige otro número de tickets.';
+            // Mostrar mensaje de error con el número de ticket no disponible
+            $message = 'El ticket número ' . $numero_tickets . ' ya no está disponible. Por favor, elige otro número de ticket.';
             wc_add_notice($message, 'error');
             return;
         }
