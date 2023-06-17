@@ -1,5 +1,5 @@
 <?php 
-function verificar_numero_tickets( $valid, $cart ) {
+function verificar_numero_tickets() {
     $numero_ticket = $_POST['billing_cotasescolhidas'];
 
     if ( ! empty( $numero_ticket ) ) {
@@ -13,18 +13,14 @@ function verificar_numero_tickets( $valid, $cart ) {
 
         if ( $existing_ticket ) {
             wc_add_notice( 'El número ' . $numero_ticket . ' no está disponible. Por favor, elige otro número para completar el proceso de pago.', 'error' );
-            $valid = false;
         }
     }
-
-    return $valid;
 }
-add_filter( 'woocommerce_add_to_cart_validation', 'verificar_numero_tickets', 10, 2 );
-
+add_action( 'woocommerce_checkout_process', 'verificar_numero_tickets' );
 
 function agregar_texto_actualizacion_checkout() {
     // Coloca aquí el texto que deseas mostrar
-    $texto_actualizacion = 'VERCION 9';
+    $texto_actualizacion = 'VERCION 1';
 
     echo '<p>' . $texto_actualizacion . '</p>';
 }
