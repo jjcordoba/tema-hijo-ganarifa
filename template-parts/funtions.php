@@ -31,9 +31,8 @@ function verificar_numero_tickets() {
 add_action('woocommerce_checkout_process', 'verificar_numero_tickets');
 function agregar_texto_actualizacion_checkout() {
     // Coloca aquí el texto que deseas mostrar
-    $texto_actualizacion = 'VERCION 1';
+    $texto_actualizacion = 'VERCION 2';
 
-    echo '<p>' . $texto_actualizacion . '</p>';
 }
 
 // Hook para mostrar el texto en el checkout
