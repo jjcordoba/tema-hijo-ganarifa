@@ -1,40 +1,28 @@
 <?php
+function verificar_numero_tickets($numero_tickets) {
+  // Obtener todos los pedidos
+  $pedidos = get_posts(array(
+      'post_type' => 'shop_order', // Asegúrate de que esto sea el tipo de post correcto
+      'numberposts' => -1,
+      'post_status' => array('wc-processing', 'wc-completed') // Incluye aquí los estados de pedido que deseas verificar
+  ));
 
-function check_duplicate_ticket(ticketNumber) {
-  // Get the existing ticket numbers from the 'billing_cotasescolhidas' field
-  var existingTicketNumbers = getExistingTicketNumbers();
+  // Recorrer los pedidos y verificar si el número de tickets está presente en cada uno
+  foreach ($pedidos as $pedido) {
+      // Obtener el número de tickets del pedido actual
+      $tickets_pedido = get_post_meta($pedido->ID, 'billing_cotasescolhidas', true);
 
-  // Check if the given ticket number already exists
-  if (existingTicketNumbers.includes(ticketNumber)) {
-      // Display a message indicating the selected ticket number is not available
-      alert("The selected ticket number (" + ticketNumber + ") is already purchased and not available.");
-
-      // Stop payment processing
-      return false;
+      // Verificar si el número de tickets coincide
+      if ($tickets_pedido === $numero_tickets) {
+          // Mostrar mensaje de error y detener el procesamiento del pago
+          wc_add_notice('El número de tickets elegido ya no está disponible.', 'error');
+          return false;
+      }
   }
 
-  // Continue with payment processing if the ticket number is not a duplicate
+  // Si no se encuentra el número de tickets en ningún pedido existente, permitir el procesamiento del pago
   return true;
 }
 
-function getExistingTicketNumbers() {
-  // Retrieve the existing ticket numbers from the 'billing_cotasescolhidas' field
-  // You can use appropriate WordPress functions to fetch the existing ticket numbers from the field
-
-  // For example, if 'billing_cotasescolhidas' is stored as a comma-separated string,
-  // you can split the string and return an array of ticket numbers
-  var existingTicketNumbersString = getFieldValue('billing_cotasescolhidas');
-  var existingTicketNumbersArray = existingTicketNumbersString.split(',');
-
-  return existingTicketNumbersArray;
-}
-
-function getFieldValue(fieldName) {
-  // Retrieve the value of the given field from WordPress
-  // You can use appropriate WordPress functions to fetch the field value
-
-  // For example, if the field is a text input, you can retrieve its value using jQuery
-  var fieldValue = jQuery("#" + fieldName).val();
-
-  return fieldValue;
-}
+// Hook para verificar el número de tickets antes de procesar el pago
+add_action('woocommerce_checkout_process', 'verificar_numero_tickets');
